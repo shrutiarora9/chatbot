@@ -3,7 +3,7 @@ from flask_cors import CORS
 import chatbot_logic
 import os
 
-app = Flask(__name__)
+app = Flask(_name_)
 CORS(app)
 
 @app.route("/", methods=["GET"])
@@ -12,11 +12,18 @@ def home():
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    data = request.get_json()
-    message = data.get("message", "")
+    # Force JSON parsing because Render often sends None
+    data = request.get_json(force=True, silent=True)
+
+    print("RAW DATA RECEIVED:", data)  # Debug (remove later)
+
+    if not data:
+        return jsonify({"reply": "Backend received no JSON!"})
+
+    message = data.get("message", "").strip()
     reply = chatbot_logic.get_response(message)
     return jsonify({"reply": reply})
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port)

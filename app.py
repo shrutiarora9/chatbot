@@ -1,7 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+
 import chatbot_logic
+import os
 
 app = Flask(__name__)
+CORS(app)
+
 
 @app.route("/", methods=["GET"])
 def home():
@@ -15,4 +20,6 @@ def chat():
     return jsonify({"reply": reply})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+     port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
